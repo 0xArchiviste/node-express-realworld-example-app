@@ -1,0 +1,44 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: travel-laptop
+    environment: dev
+    
+    steps:
+      - name: Build Docker image
+        run: |
+          docker build -t api .
+          
+      - name: Stop existing container
+        continue-on-error: true
+        run: |
+          docker stop api-container || true
+          docker rm api-container || true
+          
+      - name: Deploy container
+        run: |
+          docker run -d \
+            --name api-container \
+            -p 3000:3000 \
+            --restart unless-stopped \
+            -e IMPORTANT_API_KEY=${{ secrets.IMPORTANT_API_KEY }} \
+            api
+  
+    - name: example env create and destroy
+      run: |
+        echo "IMPORTANT_API_KEY=${{ secrets.IMPORTANT_API_KEY }} " >> .env
+        npm run start
+        rm .env
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          curl -s http://localhost:3000 || echo "Service may still be starting..."
