@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: travel-laptop
+    runs-on: self-hosted
     environment: dev
     
     steps:
