@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Build dist
+        run: |
+          npm run build
+
       - name: Build Docker image
         run: |
           sudo docker build -t api .
