@@ -15,17 +15,17 @@ jobs:
     steps:
       - name: Build Docker image
         run: |
-          docker build -t api .
+          sudo docker build -t api .
           
       - name: Stop existing container
         continue-on-error: true
         run: |
-          docker stop api-container || true
-          docker rm api-container || true
+          sudo docker stop api-container || true
+          sudo docker rm api-container || true
           
       - name: Deploy container
         run: |
-          docker run -d \
+          sudo docker run -d \
             --name api-container \
             -p 3000:3000 \
             --restart unless-stopped \
